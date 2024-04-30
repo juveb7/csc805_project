@@ -1,26 +1,56 @@
 import pandas as pd
-from dash import Dash, html
+from dash import Dash, html, dcc, Input, Output
 from modules.data_summary import create_data_summary
 from modules.products import setup_product_insights
+from modules.map import map_figure
+from modules.customer_demographic import create_demographics_figure
 
-dataset_path = "J:/datasets/shopping_trends_updated.csv"
-df = pd.read_csv(dataset_path)
+# Read the dataset
+df = pd.read_csv('./dataset/shopping_trends_updated.csv')
 
-# mapping 'Frequency of Purchases' from text to numerical value
-frequency_mapping = {
-    'Weekly': 52, 'Fortnightly': 26, 'Monthly': 12,
-    'Quarterly': 4, 'Annually': 1, 'Bi-Weekly': 24
-}
-df['Frequency_Num'] = df['Frequency of Purchases'].map(frequency_mapping)
-
+# Define the Dash app
 app = Dash(__name__)
 
-# app layout
+# Define the app layout
 app.layout = html.Div([
-    html.H1("CSC 805 Visualization Project: Shopping Trends", style={'textAlign': 'center', }),
+    html.H1("CSC 805 Visualization Project: Shopping Trends", style={'textAlign': 'center'}),
     html.Div(create_data_summary(), style={'border': '1px solid black', 'padding': '10px', 'margin': '10px'}),
-    setup_product_insights(app, df)
+    html.Div([
+        html.H2("Best Sellers Map"),
+        dcc.Graph(figure=map_figure())
+    ], style={'margin-top': '20px', 'border':'1px solid black', 'padding':'10px'}),
+    setup_product_insights(app, df),
+    html.Div([
+        html.H2("Customer Demographics"),
+        dcc.Graph(id='demographics-graph'),
+        html.Label('Age Range:'),
+        dcc.RangeSlider(
+            id='age-range-slider',
+            min=df['Age'].min(),
+            max=df['Age'].max(),
+            step=1,
+            value=[df['Age'].min(), df['Age'].max()],
+            marks={str(age): str(age) for age in range(df['Age'].min(), df['Age'].max() + 1, 5)}
+        ),
+        html.Label('Select Gender:'),
+        dcc.Dropdown(
+            id='gender-dropdown',
+            options=[{'label': gender, 'value': gender} for gender in df['Gender'].unique()] + [{'label': 'All', 'value': 'All'}],
+            value=['All'],
+            multi=True
+        ),
+    ], style={'margin-top': '20px', 'border': '1px solid black', 'padding': '10px'}),
 ], style={'fontFamily': 'Arial, sans-serif'})
 
+# Define the callback for the customer demographics graph
+@app.callback(
+    Output('demographics-graph', 'figure'),
+    [Input('age-range-slider', 'value'),
+     Input('gender-dropdown', 'value')]
+)
+def update_demographics_graph(selected_age_range, selected_genders):
+    return create_demographics_figure(df, selected_age_range, selected_genders)
+
+# Run the app
 if __name__ == '__main__':
     app.run_server(debug=True)
