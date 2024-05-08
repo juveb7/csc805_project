@@ -2,7 +2,9 @@ import plotly.express as px
 from dash import html, dcc, Output, Input, ctx
 
 def setup_product_insights(app, df):
-    # update graph based on the button clicked
+    if 'Frequency_Num' not in df.columns:
+        df['Frequency_Num'] = df['Previous Purchases']
+
     def update_product_graph(rating_nclicks, popularity_nclicks, freq_nclicks):
         button_id = ctx.triggered_id if ctx.triggered else 'rating-btn'
 
@@ -22,7 +24,7 @@ def setup_product_insights(app, df):
                 y='Count',
                 title='Popularity of Products (Number of Purchases)'
             )
-        elif button_id == 'freq-btn':
+        else:  # freq-btn
             fig = px.bar(
                 df.groupby('Item Purchased')['Frequency_Num'].sum().reset_index(),
                 x='Item Purchased',
@@ -33,7 +35,6 @@ def setup_product_insights(app, df):
         fig.update_layout(xaxis={'categoryorder': 'total descending'})
         return fig
 
-    # callback
     app.callback(
         Output('product-graph', 'figure'),
         [Input('rating-btn', 'n_clicks'),
@@ -41,7 +42,6 @@ def setup_product_insights(app, df):
          Input('freq-btn', 'n_clicks')]
     )(update_product_graph)
 
-    # layout for the product insights section
     product_insights_layout = html.Div([
         html.H1("Product Insights", style={'textAlign': 'center'}),
         dcc.Graph(id='product-graph'),

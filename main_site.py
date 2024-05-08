@@ -5,13 +5,10 @@ from modules.products import setup_product_insights
 from modules.map import map_figure
 from modules.customer_demographic import create_demographics_figure
 
-# Read the dataset
 df = pd.read_csv('./dataset/shopping_trends_updated.csv')
 
-# Define the Dash app
 app = Dash(__name__)
 
-# Define the app layout
 app.layout = html.Div([
     html.H1("CSC 805 Visualization Project: Shopping Trends", style={'textAlign': 'center'}),
     html.Div(create_data_summary(), style={'border': '1px solid black', 'padding': '10px', 'margin': '10px'}),
@@ -42,7 +39,6 @@ app.layout = html.Div([
     ], style={'margin-top': '20px', 'border': '1px solid black', 'padding': '10px'}),
 ], style={'fontFamily': 'Arial, sans-serif'})
 
-# Define the callback for the customer demographics graph
 @app.callback(
     Output('demographics-graph', 'figure'),
     [Input('age-range-slider', 'value'),
@@ -51,6 +47,5 @@ app.layout = html.Div([
 def update_demographics_graph(selected_age_range, selected_genders):
     return create_demographics_figure(df, selected_age_range, selected_genders)
 
-# Run the app
 if __name__ == '__main__':
     app.run_server(debug=True)
