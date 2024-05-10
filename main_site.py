@@ -14,8 +14,8 @@ app.layout = html.Div([
     html.Div(create_data_summary(), style={'border': '1px solid black', 'padding': '10px', 'margin': '10px'}),
     html.Div([
         html.H2("Best Sellers Map"),
-        dcc.Graph(figure=map_figure())
-    ], style={'margin-top': '20px', 'border':'1px solid black', 'padding':'10px'}),
+        dcc.Graph(figure=map_figure(), style={'width': '100%', 'height': '750px'})
+    ], style={'margin': '10px', 'border':'1px solid black', 'padding':'10px'}),
     setup_product_insights(app, df),
     html.Div([
         html.H2("Customer Demographics"),
@@ -36,7 +36,7 @@ app.layout = html.Div([
             value=['All'],
             multi=True
         ),
-    ], style={'margin-top': '20px', 'border': '1px solid black', 'padding': '10px'}),
+    ], style={'margin': '10px', 'border': '1px solid black', 'padding': '10px'}),
 ], style={'fontFamily': 'Arial, sans-serif'})
 
 @app.callback(

@@ -29,7 +29,7 @@ def map_figure():
     
     # Update the layout to add a title and limit the map scope to the USA
     fig.update_layout(
-        title_text='Purchased Items',
+        #title_text='Purchased Items',
         geo_scope='usa',
     )
 
@@ -48,9 +48,9 @@ def map_figure():
     # Include buttons in the layout
     fig.update_layout(
         updatemenus=[dict(
-            x=0.1,
+            x=0.005,
             xanchor='left',
-            y=1.065,
+            y=1,
             yanchor='top',
             buttons=buttons,
             showactive=True
