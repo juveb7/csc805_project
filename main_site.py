@@ -21,8 +21,6 @@ app.layout = html.Div([
         dcc.Graph(figure=map_figure(), style={'width': '100%', 'height': '750px'})
     ], style={'margin': '10px', 'border':'1px solid black', 'padding':'10px'}),
 
-    setup_product_insights(app, df),
-
     setup_purchase_insights(app, df),
 
     html.Div([
