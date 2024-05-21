@@ -1,7 +1,9 @@
 import pandas as pd
+import plotly as px
 from dash import Dash, html, dcc, Input, Output
 from modules.data_summary import create_data_summary
 from modules.products import setup_product_insights
+from modules.seasonal_purchases import setup_purchase_insights
 from modules.map import map_figure
 from modules.customer_demographic import create_demographics_figure
 
@@ -11,12 +13,18 @@ app = Dash(__name__)
 
 app.layout = html.Div([
     html.H1("CSC 805 Visualization Project: Shopping Trends", style={'textAlign': 'center'}),
+
     html.Div(create_data_summary(), style={'border': '1px solid black', 'padding': '10px', 'margin': '10px'}),
+
     html.Div([
         html.H2("Best Sellers Map"),
         dcc.Graph(figure=map_figure(), style={'width': '100%', 'height': '750px'})
     ], style={'margin': '10px', 'border':'1px solid black', 'padding':'10px'}),
+
     setup_product_insights(app, df),
+
+    setup_purchase_insights(app, df),
+
     html.Div([
         html.H2("Customer Demographics"),
         dcc.Graph(id='demographics-graph'),
