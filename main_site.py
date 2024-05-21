@@ -1,5 +1,4 @@
 import pandas as pd
-import plotly as px
 from dash import Dash, html, dcc, Input, Output
 from modules.data_summary import create_data_summary
 from modules.products import setup_product_insights
@@ -20,6 +19,8 @@ app.layout = html.Div([
         html.H2("Best Sellers Map"),
         dcc.Graph(figure=map_figure(), style={'width': '100%', 'height': '750px'})
     ], style={'margin': '10px', 'border':'1px solid black', 'padding':'10px'}),
+
+    setup_product_insights(app, df),
 
     setup_purchase_insights(app, df),
 
